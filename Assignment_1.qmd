@@ -28,9 +28,9 @@ colnames(df)[c(3,9:11,16:20,1,2,31)]
 
 Afterwards I want to create the following:
 
--   A binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” columns.
+- A binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” columns.
 
--   Convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+- Convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
 
 The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
 
