@@ -1,0 +1,16 @@
+---
+title: "Assignment 1"
+author: "Shawn Ganz"
+format: html
+---
+
+
+## Introduction
+
+
+## Approach
+
+## Code-base
+### to be completed at later date.
+## Video
+### to be completed at later date.
