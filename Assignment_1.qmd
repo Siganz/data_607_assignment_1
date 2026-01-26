@@ -4,13 +4,40 @@ author: "Shawn Ganz"
 format: html
 ---
 
-
 ## Introduction
 
+For this assignment I chose to use a csv from NYC OpenData called [2018 Central Park Squirrel Census - Squirrel Data](https://data.cityofnewyork.us/Environment/2018-Central-Park-Squirrel-Census-Squirrel-Data/vfnx-vebw/about_data) provided by "The Squirrel Census".
 
 ## Approach
 
+Since the assignment is to transform this dataset, I want to drop a couple of columns. Below is a list of all the columns:
+
+```{r}
+#| echo: false
+df <- read.csv("https://raw.githubusercontent.com/Siganz/data_607_week_1/refs/heads/main/data/2018_Central_Park_Squirrel_Census_Squirrel_Data_20260126.csv")
+colnames(df)
+```
+
+I want to create a dataframe with only these columns:
+
+```{r}
+#| echo: false
+df <- read.csv("https://raw.githubusercontent.com/Siganz/data_607_week_1/refs/heads/main/data/2018_Central_Park_Squirrel_Census_Squirrel_Data_20260126.csv")
+colnames(df)[c(3,9:11,16:20,1,2,31)]
+```
+
+Afterwards I want to create the following:
+
+-   A binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” columns.
+
+-   Convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+
+The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
+
 ## Code-base
-### to be completed at later date.
+
+TODO: Code-base
+
 ## Video
-### to be completed at later date.
+
+TODO: Video
