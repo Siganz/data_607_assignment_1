@@ -4,13 +4,20 @@ author: "Shawn Ganz"
 format: html
 ---
 
-
 ## Introduction
 
+For this assignment I chose to use a csv from NYC OpenData called [2018 Central Park Squirrel Census - Squirrel Data](https://data.cityofnewyork.us/Environment/2018-Central-Park-Squirrel-Census-Squirrel-Data/vfnx-vebw/about_data) provided by "The Squirrel Census".
 
 ## Approach
 
+Since the assignment is to transform this dataset, we can drop and rename a couple of non-essential columns and standardize column names; create a binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” fields; and convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+
+The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
+
 ## Code-base
-### to be completed at later date.
+
+TODO: Code-base
+
 ## Video
-### to be completed at later date.
+
+TODO: Video
