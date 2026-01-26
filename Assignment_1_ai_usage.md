@@ -1,5 +1,5 @@
 ## Generative AI Usage Disclosure
-I used OpenAI’s ChatGPT (Version 5.2) as a generative AI tool to assist with understanding assignment requirements, Git/GitHub workflows, Quarto (.qmd) formatting, and basic R syntax. All code and written content were reviewed and modified by me, and I understand the structure and function of the final submission.
+I used OpenAI’s ChatGPT (Version 5.2) as a generative AI tool to assist with this assignment. Each deliverable used for the assignment will have a section below, including brief commentary and a section of relevant QA.
 
 **Citation**:  
 OpenAI. (2025). *ChatGPT* (Version 5.2) [Large language model]. https://chat.openai.com. Accessed January 26, 2026.
@@ -7,6 +7,7 @@ OpenAI. (2025). *ChatGPT* (Version 5.2) [Large language model]. https://chat.ope
 ---
 
 ## Approach
+I am new to R, RStudio, Rpubs, Git/Github, so I had a bunch of general questions to help me with the approach deliverable. 
 
 **Q:** Should I use QMD or RMD for this assignment?  
 **A:** QMD is preferred. Quarto is the current standard, supports the same outputs as R Markdown, and is actively developed. RMD still works, but new work should use QMD.
