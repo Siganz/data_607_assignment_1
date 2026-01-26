@@ -10,6 +10,7 @@ For this assignment I chose to use a csv from NYC OpenData called [2018 Central 
 
 ## Approach
 
+<<<<<<< HEAD
 Since the assignment is to transform this dataset, I want to drop a couple of columns. Below is a list of all the columns:
 
 ```{r}
@@ -31,6 +32,9 @@ Afterwards I want to create the following:
 -   A binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” columns.
 
 -   Convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+=======
+Since the assignment is to transform this dataset, we can drop and rename a couple of non-essential columns and standardize column names; create a binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” fields; and convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+>>>>>>> ecd9a4337cc7767ad888fc9076e0dcd45a8ac2d4
 
 The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
 
