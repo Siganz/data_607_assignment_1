@@ -10,7 +10,7 @@ For this assignment I chose to use a csv from NYC OpenData called [2018 Central 
 
 ## Approach
 
-Since the assignment is to transform this dataset, I want to drop a couple of columns. Below is a list of all the columns:
+Since the assignment is to transform this dataframe, I want to drop a couple of columns. Below is a list of all the columns:
 
 ```{r}
 #| echo: false
