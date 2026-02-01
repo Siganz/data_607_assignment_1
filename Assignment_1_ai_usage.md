@@ -32,8 +32,6 @@ I am new to R, RStudio, Rpubs, Git/Github, so I had a bunch of general questions
 
 ## Codebase
 
-## Codebase
-
 ChatGPT was used to assist with understanding R syntax, data-type coercion, vectorized operations, and ggplot2 structure during development of the codebase. The interaction focused on reasoning through transformations and visualization patterns rather than generating final results.
 
 **Q:** How should character `"true"` / `"false"` values be converted to logical in R?  
