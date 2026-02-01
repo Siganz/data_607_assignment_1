@@ -13,7 +13,6 @@ For this assignment I chose to use a csv from NYC OpenData called [2018 Central 
 Since the assignment is to transform this dataframe, I want to drop a couple of columns. Below is a list of all the columns:
 
 ```{r}
-#| echo: false
 df <- read.csv("https://raw.githubusercontent.com/Siganz/data_607_week_1/refs/heads/main/data/2018_Central_Park_Squirrel_Census_Squirrel_Data_20260126.csv")
 colnames(df)
 ```
@@ -21,8 +20,6 @@ colnames(df)
 I want to create a dataframe with only these columns:
 
 ```{r}
-#| echo: false
-df <- read.csv("https://raw.githubusercontent.com/Siganz/data_607_week_1/refs/heads/main/data/2018_Central_Park_Squirrel_Census_Squirrel_Data_20260126.csv")
 colnames(df)[c(3,9:11,16:20,1,2,31)]
 ```
 
@@ -145,7 +142,7 @@ for (col in bool_cols) {
 It seems that most of the columns are already clean, there might be an issue with the lowercase false/true so I'm going to upper those values.
 
 ```{r}
-# the columns are clean, will use tupper() on the values 
+# the columns are clean, will use toupper() on the values 
 for (col in bool_cols) {
   df2[[col]] <- toupper(df2[[col]])
 }
@@ -167,7 +164,7 @@ Now I will create a new column called activity.
 
 ```{r}
 
-df2$activity <- as.logical(rowSums(df2[bool_cols]))
+df2$activity <- as.logical(rowSums(df2[bool_cols]) > 0)
 str(df2)
 ```
 
@@ -212,7 +209,8 @@ Checking on uniques for the above_ground_measurement
 unique(df2$above_ground_measurement)
 ```
 
-Looks like int, except for False and "". So, let's just use a grep to be extra sure if any fields have any alphabet or symbols, we will just say it's bad data.
+Looks like int, except for FALSE and "". So, we will look for any values %in% those and change them to "0" before converting to numeric. If this was a pipeline, I would build a function to normalize then find any non-numeric values.
+
 ```{r}
 df2$above_ground_measurement[df2$above_ground_measurement %in% c("", "FALSE")] <- "0"
 
@@ -340,7 +338,7 @@ ggplot(activity_rates, aes(x = primary_color, y = activity_rate, fill = primary_
 Coming from Python, I like f-strings, so here are some ones I made in R: 
 
 ```{r}
-#| echo: False
+#| echo: false
 paste(
   "Squirrel climbing stats:",
   colSums(df2["climbing"]),
@@ -400,6 +398,8 @@ ggplot(rates, aes(x = primary_color, y = activity, fill = primary_color)) +
 
 ```
 
+### Code Base Conclusion
+I went a little overboard, but I found it really helpful to learn more about r. I enjoy using the qmd since the "{r}" is easy to type and I can always check the output via html or using the console in rstudio. There is obviously a lot that I need to work on (ggplot2, aggregate, tidyverse), however this was a great introduction. I actually enjoy that base r is very intuitive and I feel like I can pick this up rather quickly. 
 
 ## Video
 
