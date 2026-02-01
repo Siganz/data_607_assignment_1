@@ -30,7 +30,7 @@ Afterwards I want to create the following:
 
 - A binary “Active” squirrel column using the “Running,” “Chasing,” “Climbing,” “Eating,” and “Foraging” columns.
 
-- Convert the “Above Ground Sighter Measurement” column to numeric (INT/FLOAT) values only.
+- Convert the “Above Ground Sighter Measurement”, "x", "y" columns to numeric (INT/FLOAT) values only.
 
 The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
 
@@ -72,6 +72,7 @@ cols <- c(
   "Climbing",
   "Eating",
   "Foraging",
+  "Above.Ground.Sighter.Measurement",
   "X",
   "Y"
 )
@@ -94,6 +95,7 @@ colnames(df2) <- c(
   "climbing",
   "eating",
   "foraging",
+  "above_ground_measurement",
   "x",
   "y"
 )
@@ -176,7 +178,7 @@ df2 <- df2[, c(
   "unique_id",
   "primary_color",
   "running", "chasing", "climbing", "eating", "foraging",
-  "activity",
+  "activity", "above_ground_measurement",
   "x", "y"
 )]
 
@@ -205,12 +207,44 @@ df2$primary_color[df2$primary_color == ""] <- NA
 unique(df2$primary_color)
 ```
 
+Checking on uniques for the above_ground_measurement
+```{r}
+unique(df2$above_ground_measurement)
+```
+
+Looks like int, except for False and "". So, let's just use a grep to be extra sure if any fields have any alphabet or symbols, we will just say it's bad data.
+```{r}
+df2$above_ground_measurement[df2$above_ground_measurement %in% c("", "FALSE")] <- "0"
+
+df2$above_ground_measurement <- as.numeric(df2$above_ground_measurement)
+
+str(df2$above_ground_measurement)
+```
+
+Checking on X/Y to see if they have any non numeric symbols: 
+```{r}
+bad_rows <- which(grepl("^$|[^0-9.-]", df2$x))
+bad_rows
+bad_rows <- which(grepl("^$|[^0-9.-]", df2$y))
+bad_rows
+```
+
+They aren't, so let's just do a simple as.numeric conversion
+
+```{r}
+df2$x <- as.numeric(df2$x)
+df2$y <- as.numeric(df2$y)
+str(df2)
+```
+
+This data looks good to me!
+
 ### Reporting
 
 Now I would like to plot these using ggplot2, I had an AI generate the following code since I'm not familiar.
 
 
-*Squirrel Behaviors*
+**Squirrel Behaviors**
 ```{r}
 rates <- colSums(df2[bool_cols]) / nrow(df2)
 
@@ -231,7 +265,7 @@ ggplot(plot_df, aes(x = behavior, y = proportion)) +
 
 ```
 
-*Share of Total Activity by Fur Color*
+**Share of Total Activity by Fur Color**
 ```{r}
 
 counts <- aggregate(
@@ -273,7 +307,7 @@ do.call(rbind, lapply(bool_cols, function(col) {
 }))
 ```
 
-*Behavior Rates by Primary Fur Color*
+**Behavior Rates by Primary Fur Color**
 ```{r}
 # Calculate activity rates for all behaviors
 activity_rates <- do.call(rbind, lapply(bool_cols, function(col) {
@@ -303,41 +337,7 @@ ggplot(activity_rates, aes(x = primary_color, y = activity_rate, fill = primary_
   theme(legend.position = "none")
 ```
 
-*Average Activity Rate by Primary Fur Color*
-This one is pretty funny, I actually spent a good 30 minutes trying to figure out if my data was wrong, like FALSE was somehow being aggregated, but it just turns out all the squirrels were very active!
-
-```{r}
-rates <- aggregate(
-  activity ~ primary_color,
-  data = df2,
-  FUN = mean,
-  na.action = na.omit
-)
-
-ggplot(rates, aes(x = primary_color, y = activity, fill = primary_color)) +
-  geom_col() +
-  scale_y_continuous(labels = scales::percent) +
-  labs(
-    title = "Average Activity Rate by Primary Fur Color",
-    x = "Primary Fur Color",
-    y = "Percent of Observations with Activity"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-```
-
-Coming from Python I like f-strings, so I made some using R. 
-
-```{r}
-paste(
-  "Squirrel chasing stats:",
-  colSums(df2["chasing"]),
-  " / ",
-  
-  nrow(df2)
-)
-```
+Coming from Python, I like f-strings, so here are some ones I made in R: 
 
 ```{r}
 #| echo: False
@@ -374,6 +374,32 @@ paste(
 )
 
 ```
+
+
+**Average Activity Rate by Primary Fur Color**
+This one is pretty funny, I actually spent a good 30 minutes trying to figure out if my data was wrong, like if FALSE was somehow being aggregated, but it just turns out all the squirrels were very active!
+
+```{r}
+rates <- aggregate(
+  activity ~ primary_color,
+  data = df2,
+  FUN = mean,
+  na.action = na.omit
+)
+
+ggplot(rates, aes(x = primary_color, y = activity, fill = primary_color)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Average Activity Rate by Primary Fur Color",
+    x = "Primary Fur Color",
+    y = "Percent of Observations with Activity"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
 
 ## Video
 
