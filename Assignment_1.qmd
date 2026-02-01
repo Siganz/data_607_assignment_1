@@ -32,9 +32,10 @@ Afterwards I want to create the following:
 The motivation to use this dataset is simple, I just chose the first interesting popular dataset I found on NYC OpenData. This encourages an exploratory approach, which might be useful when learning new skills.
 
 ## Code-base
-### Setup
-- read the data
-- check data types
+
+Below will contain the code broken by text which outlines my workflow and thought process as I was coding.
+
+### Body
 
 ```{r}
 
@@ -97,20 +98,6 @@ colnames(df2) <- c(
   "y"
 )
 
-cols <- c(
-  "unique_id",
-  "primary_color",
-  "highlight_color",
-  "combination_color",
-  "running",
-  "chasing",
-  "climbing",
-  "eating",
-  "foraging",
-  "x",
-  "y"
-)
-
 bool_cols <- c(
   "running",
   "chasing",
@@ -126,7 +113,6 @@ color_cols <- c(
 )
 ```
 
-### Data viewing & Manipulation
 I would now like to view the data and check out the uniques for certain columns and see what I can do with them.
 
 ```{r}
@@ -168,7 +154,7 @@ df2$activity <- as.logical(rowSums(df2[bool_cols]) > 0)
 str(df2)
 ```
 
-I don't like that activity column is at the tail, moving it:
+I don't like that activity column is at the tail, so I would like to move it and also remove highlight_color and combination_color column since I don't believe I'll use them anymore.
 
 ```{r}
 df2 <- df2[, c(
@@ -183,12 +169,9 @@ str(df2)
 
 ```
 
-I  don't like the highlight_color and combination_color columns. I am going to drop them, while also checking for the unique in the remaining color column, primary_color.
+I would like to check the unique's of primary color, which I could use for (col in df2$primarycolor), but I'll just use color_cols since I created it earlier.
 
 ```{r}
-df2$highlight_color <- NULL
-df2$combination_color <- NULL
-
 # should return three lines, last two should just be NULL
 for (col in color_cols){
   print(unique(df2[[col]]))
@@ -196,7 +179,7 @@ for (col in color_cols){
 
 ```
 
-Now, I want to remove the empty string ("") from being a unique value. 
+Now, I want to remove the empty string ("") and instead make it NA. I learned that using NULL in R would try and remove the rows.
 
 ```{r}
 df2$primary_color[df2$primary_color == ""] <- NA
@@ -205,6 +188,7 @@ unique(df2$primary_color)
 ```
 
 Checking on uniques for the above_ground_measurement
+
 ```{r}
 unique(df2$above_ground_measurement)
 ```
@@ -237,10 +221,23 @@ str(df2)
 
 This data looks good to me!
 
-### Reporting
+### Conclusion
 
-Now I would like to plot these using ggplot2, I had an AI generate the following code since I'm not familiar.
+This segment will contain some visuals and findings from the data.I used ggplot2 for the visuals, which I had an AI generate the code since I'm not too familiar with that package.
 
+```{r}
+ggplot(df2, aes(x = primary_color, fill = primary_color)) +
+  geom_bar() +
+  labs(
+    title = "Squirrel Count by Primary Fur Color",
+    x = "Primary Fur Color",
+    y = "Number of Observations"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+This is a count of all observations against primary fur color, you'll see that Gray's are more populous than any other primary fur color (if we just look at this census data).
 
 **Squirrel Behaviors**
 ```{r}
@@ -251,7 +248,7 @@ plot_df <- data.frame(
   proportion = as.numeric(rates)
 )
 
-ggplot(plot_df, aes(x = behavior, y = proportion)) +
+ggplot(plot_df, aes(x = behavior, y = proportion, fill = behavior)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent) +
   labs(
@@ -259,9 +256,32 @@ ggplot(plot_df, aes(x = behavior, y = proportion)) +
     x = "Behavior",
     y = "Percent of Observations"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "none")
+
 
 ```
+
+We can see that the largest observed activity was foraging, by a large magin. It seems like climbing, eating, and running are nearly identitical with a difference of less than 5%, with chasing the lowest, which is less than 10%.  
+
+
+**Summary Table for All Behaviors**
+```{r}
+# Create a summary table for all behaviors
+do.call(rbind, lapply(bool_cols, function(col) {
+  df2 %>%
+    group_by(primary_color) %>%
+    summarise(
+      behavior = col,
+      n_false = sum(get(col) == FALSE, na.rm = TRUE),
+      n_true = sum(get(col) == TRUE, na.rm = TRUE),
+      total = n(),
+      .groups = 'drop'
+    )
+}))
+```
+This is a simple table that was generated to see the quantities of records with their column values and the sum of the logic values.
+
 
 **Share of Total Activity by Fur Color**
 ```{r}
@@ -288,22 +308,8 @@ ggplot(counts, aes(x = primary_color, y = percent, fill = primary_color)) +
 
 
 ```
+This graph outlines the percentage of recorded activity between primary fur classes. Gray absolutely dominates, but this is mainly due to the amount of records. I created this and left it here, because it could be interpreted incorrectly as Gray's being more active than the other colors. 
 
-*Summary Table for All Behaviors*
-```{r}
-# Create a summary table for all behaviors
-do.call(rbind, lapply(bool_cols, function(col) {
-  df2 %>%
-    group_by(primary_color) %>%
-    summarise(
-      behavior = col,
-      n_false = sum(get(col) == FALSE, na.rm = TRUE),
-      n_true = sum(get(col) == TRUE, na.rm = TRUE),
-      total = n(),
-      .groups = 'drop'
-    )
-}))
-```
 
 **Behavior Rates by Primary Fur Color**
 ```{r}
@@ -324,7 +330,8 @@ activity_rates <- do.call(rbind, lapply(bool_cols, function(col) {
 # Create the bar chart
 ggplot(activity_rates, aes(x = primary_color, y = activity_rate, fill = primary_color)) +
   geom_col() +
-  facet_wrap(~ behavior, ncol = 3) +
+  facet_wrap(~ behavior, ncol = 1) +
+  coord_flip() +
   scale_y_continuous(labels = scales::percent) +
   labs(
     title = "Behavior Rates by Primary Fur Color",
@@ -333,49 +340,23 @@ ggplot(activity_rates, aes(x = primary_color, y = activity_rate, fill = primary_
   ) +
   theme_minimal() +
   theme(legend.position = "none")
-```
 
-Coming from Python, I like f-strings, so here are some ones I made in R: 
+```
+This graph is interesting because it visually shows that squirrels, regardless of their fur color, seem to have very similar activity rates. This is true of everything except foraging, so for that we can do this:
 
 ```{r}
-#| echo: false
-paste(
-  "Squirrel climbing stats:",
-  colSums(df2["climbing"]),
-  " / ",
-  
-  nrow(df2)
+behavior_dispersion <- aggregate(
+  activity_rate ~ behavior,
+  data = activity_rates,
+  FUN = sd
 )
 
-paste(
-  "Squirrel eating stats",
-  colSums(df2["eating"]),
-  " / ",
-  
-  nrow(df2)
-)
-
-paste(
-  "Squirrel foraging stats",
-  colSums(df2["foraging"]),
-  " / ",
-  
-  nrow(df2)
-)
-
-paste(
-  "Squirrel running stats",
-  colSums(df2["running"]),
-  " / ",
-  
-  nrow(df2)
-)
-
+behavior_dispersion
 ```
 
+This behavior_dispersion shows the standard deviation of activity_rate (which is grouped by primary_color) to behavior. Foraging has 0.05 SD (5 percentage points), which has the strongest association with fur color than all other types of behaviors. 
 
 **Average Activity Rate by Primary Fur Color**
-This one is pretty funny, I actually spent a good 30 minutes trying to figure out if my data was wrong, like if FALSE was somehow being aggregated, but it just turns out all the squirrels were very active!
 
 ```{r}
 rates <- aggregate(
@@ -397,9 +378,10 @@ ggplot(rates, aes(x = primary_color, y = activity, fill = primary_color)) +
   theme(legend.position = "none")
 
 ```
+This one is pretty funny, I actually spent a good 30 minutes trying to figure out if my data was wrong, like if FALSE was somehow being aggregated, but it just turns out all the squirrels were very active!
 
-### Code Base Conclusion
-I went a little overboard, but I found it really helpful to learn more about r. I enjoy using the qmd since the "{r}" is easy to type and I can always check the output via html or using the console in rstudio. There is obviously a lot that I need to work on (ggplot2, aggregate, tidyverse), however this was a great introduction. I actually enjoy that base r is very intuitive and I feel like I can pick this up rather quickly. 
+### Final Thoughts
+Recommendations for the data would be to explore it further, like with more statistical analysis. I think the x/y coordinates would be interesting to see where in the park different color types of squirrels were recorded, and what parts of the park were there the most activity. A GIS map would be a great tool to help visualize this further. 
 
 ## Video
 
