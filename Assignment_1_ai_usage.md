@@ -31,4 +31,42 @@ I am new to R, RStudio, Rpubs, Git/Github, so I had a bunch of general questions
 **A:** They indicate a merge conflict where Git cannot automatically reconcile differences. The user must manually choose which content to keep, remove the markers, and commit the resolution.
 
 ## Codebase
+
+## Codebase
+
+ChatGPT was used to assist with understanding R syntax, data-type coercion, vectorized operations, and ggplot2 structure during development of the codebase. The interaction focused on reasoning through transformations and visualization patterns rather than generating final results.
+
+**Q:** How should character `"true"` / `"false"` values be converted to logical in R?  
+**A:** Normalize casing using `toupper()`, then convert using `as.logical()`.
+
+**Q:** How can multiple logical columns be combined into a single “activity” indicator?  
+**A:** Use `rowSums()` across the logical columns and compare the result to `> 0` to produce a logical value.
+
+**Q:** How can empty strings in categorical fields be handled safely?  
+**A:** Replace empty strings with `NA` to avoid treating missing values as valid categories.
+
+**Q:** How should mixed character and numeric values be handled prior to numeric coercion?  
+**A:** Identify and normalize non-numeric sentinel values (e.g., `""`, `"FALSE"`) before applying `as.numeric()`.
+
+**Q:** How can non-numeric values be detected before conversion?  
+**A:** Use regular expressions with `grepl()` to locate rows containing non-numeric characters.
+
+**Q:** What caused the `NAs introduced by coercion` warning?  
+**A:** Non-numeric values remained in the column at the time of coercion and needed to be normalized first.
+
+**Q:** What is the difference between `is.numeric()` and `as.numeric()`?  
+**A:** `is.numeric()` performs a type check, while `as.numeric()` converts values.
+
+**Q:** How can logical values be aggregated for summary statistics?  
+**A:** Logical values can be summed (`TRUE` = 1) or averaged to calculate rates.
+
+**Q:** How were bar charts created using ggplot2?  
+**A:** Guidance was provided on structuring `ggplot()` calls, including `aes()`, `geom_col()`, labeling, faceting, and axis scaling, while all plots were implemented and adjusted by the author.
+
+**Q:** How were facet plots used to compare behaviors?  
+**A:** Faceting (`facet_wrap()`) was used to visualize behavior rates across categories using a consistent scale.
+
+**Q:** How were aggregation functions chosen for reporting?  
+**A:** Guidance helped determine when to use `sum()` versus `mean()` depending on whether counts or rates were desired.
+
 ## Video
